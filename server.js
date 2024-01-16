@@ -8,7 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 const corsOptions = {
-    origin: 'https://stellular-sawine-924594.netlify.app', // Permitir solicitudes desde cualquier origen (en entorno local)
+    origin: 'https://my-portafolio-ac.netlify.app', // Permitir solicitudes desde cualquier origen 
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true, // Habilitar credenciales (cookies, encabezados, etc.)
   };
