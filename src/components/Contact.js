@@ -81,7 +81,7 @@ const Contact = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:3001/send-email', {
+      const response = await fetch('https://stellular-sawine-924594.netlify.app', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
