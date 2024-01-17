@@ -1,0 +1,36 @@
+/* styles.css */
+.NoBorderTextField-root .MuiInputLabel-root {
+    color: white;
+  }
+  
+  .NoBorderTextField-root .MuiOutlinedInput-root {
+    background-color: transparent;
+  
+    & fieldset {
+      border-bottom: 2px solid black;
+      border-width: 0 0 2px 0;
+      transition: border-bottom-color 0.3s; /* Añadido para la transición de color */
+    }
+  
+    &:hover fieldset {
+      border-bottom-color: #C84810; /* Cambiado para el color naranja en hover */
+    }
+  
+    &.Mui-focused fieldset {
+      border-color: #C84810;
+    }
+      
+    & input:-webkit-autofill {
+      -webkit-text-fill-color: white;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+  }
+  
+  .NoBorderTextField-root .MuiInputBase-root {
+    color: white;
+  }
+  
+  .NoBorderTextField-root .Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #C84810;
+  }
+  

@@ -4,6 +4,8 @@ import { styled } from '@mui/system';
 import { Typography, TextField, Button } from '@mui/material';
 import CustomAlert from './CustomAlert';
 
+
+
 const ContactContainer = styled('div')({
   height: '100vh',
   display: 'flex',
@@ -34,31 +36,9 @@ const StyledButton = styled(Button)({
   },
 });
 
-const NoBorderTextField = styled(TextField)({
-  '& .MuiInputLabel-root': {
-    color: 'white',
-  },
-  '& .MuiOutlinedInput-root': {
-    '& fieldset': {
-      borderBottom: '2px solid black',
-      borderWidth: '0 0 2px 0',
-    },
-    '&:hover fieldset': {
-      borderBottom: '2px solid #C84810',
-    },
-    '&.Mui-focused fieldset': {
-      borderColor: '#C84810', // Ajusta el color del borde cuando está enfocado
-    },
-  },
-  '& .MuiInputBase-root': {
-    color: 'white',
-  },
-  '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
-    borderColor: '#C84810', // Ajusta el color del borde cuando está enfocado
-  },
-});
-
-
+const NoBorderTextField = ({ ...props }) => (
+  <TextField className="NoBorderTextField-root" {...props} />
+);
 
 
 
@@ -116,6 +96,7 @@ const Contact = () => {
   };
 
   return (
+    
     <ContactContainer>
       <InnerContainer>
         <Typography
