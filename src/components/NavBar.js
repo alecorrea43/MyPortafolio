@@ -31,7 +31,7 @@ export function NavBar() {
   const handleDownloadCV = () => {
     // Lógica para descargar el currículum
     const downloadLink = document.createElement("a");
-    downloadLink.href = "/pdf/Aljandro-Correa-CVingles.pdf"; // Reemplazar con tu ruta real
+    downloadLink.href = "/pdf/Aljandro-Correa-CV (6).pdf"; // Reemplazar con tu ruta real
     downloadLink.download = "Aljandro-Correa-CV.pdf";
     document.body.appendChild(downloadLink);
     downloadLink.click();
