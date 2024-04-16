@@ -61,7 +61,7 @@ const Contact = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('https://my-portafolio-ac.netlify.app/.netlify/functions/formContact', {
+      const response = await fetch('/.netlify/functions/formContact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
