@@ -1,6 +1,57 @@
 const { google } = require('googleapis');
-require('dotenv').config();
 
+
+// Configuración del cliente OAuth2
+const oAuth2Client = new google.auth.OAuth2(
+  process.env.GMAIL_CLIENT_ID,
+  process.env.GMAIL_CLIENT_SECRET,
+  process.env.GMAIL_REDIRECT_URI
+);
+
+// Ruta para obtener el URL de autorización
+exports.getAuthUrl = async function(event, context) {
+  const authUrl = oAuth2Client.generateAuthUrl({
+    access_type: 'offline',
+    scope: ['https://www.googleapis.com/auth/gmail.send'],
+    redirect_uri: process.env.GMAIL_REDIRECT_URI
+  });
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ authUrl }),
+  };
+};
+
+// Ruta para intercambiar el código de autorización por tokens
+exports.getToken = async function(event, context) {
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ message: 'Method Not Allowed' }),
+    };
+  }
+
+  const { code } = JSON.parse(event.body);
+
+  try {
+    const { tokens } = await oAuth2Client.getToken(code);
+    // Aquí puedes guardar los tokens en una base de datos o en el entorno
+    oAuth2Client.setCredentials(tokens);
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: 'Tokens obtenidos con éxito', tokens }),
+    };
+  } catch (error) {
+    console.error('Error al obtener el token:', error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ message: 'Error al obtener el token', error: error.message }),
+    };
+  }
+};
+
+// Ruta para enviar el correo
 exports.handler = async function(event, context) {
   if (event.httpMethod !== 'POST') {
     return {
@@ -11,13 +62,13 @@ exports.handler = async function(event, context) {
 
   const { name, email, message } = JSON.parse(event.body);
 
-  // Configuración del cliente OAuth2
+  // Configuración del cliente OAuth2 con el token de acceso
   const oAuth2Client = new google.auth.OAuth2(
     process.env.GMAIL_CLIENT_ID,
     process.env.GMAIL_CLIENT_SECRET,
     process.env.GMAIL_REDIRECT_URI
   );
-
+  
   oAuth2Client.setCredentials({ refresh_token: process.env.GMAIL_REFRESH_TOKEN });
 
   const gmail = google.gmail({ version: 'v1', auth: oAuth2Client });
