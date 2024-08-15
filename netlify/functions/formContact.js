@@ -18,7 +18,7 @@ exports.handler = async function(event, context) {
     process.env.GMAIL_REDIRECT_URI
   );
 
-  oAuth2Client.setCredentials({ refresh_token: process.env.REFRESH_TOKEN });
+  oAuth2Client.setCredentials({ refresh_token: process.env.GMAIL_REFRESH_TOKEN });
 
   const gmail = google.gmail({ version: 'v1', auth: oAuth2Client });
 
