@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+const { google } = require('googleapis');
 require('dotenv').config();
 
 exports.handler = async function(event, context) {
@@ -11,31 +11,44 @@ exports.handler = async function(event, context) {
 
   const { name, email, message } = JSON.parse(event.body);
 
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: process.env.SMTP_PORT,
-    secure: true,
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-    tls: {
-      rejectUnauthorized: false,
-    },
-  });
-
-  const mailOptions = {
-    from: process.env.SMTP_USER,
-    to: process.env.TO_EMAIL,
-    subject: 'Nuevo mensaje de contacto',
-    text: `Nombre: ${name}\nCorreo Electrónico: ${email}\nMensaje: ${message}`,
-  };
+  const oAuth2Client = new google.auth.OAuth2(
+    process.env.GMAIL_CLIENT_ID,
+    process.env.GMAIL_CLIENT_SECRET,
+    process.env.GMAIL_REDIRECT_URI
+  );
+  
+  // Configura el token de actualización (refresh token)
+  oAuth2Client.setCredentials({ refresh_token: process.env.GMAIL_REFRESH_TOKEN });
 
   try {
-    const info = await transporter.sendMail(mailOptions);
+    const gmail = google.gmail({ version: 'v1', auth: oAuth2Client });
+
+    const emailContent = `
+      From: ${process.env.GMAIL_USER}
+      To: ${process.env.TO_EMAIL}
+      Subject: Nuevo mensaje de contacto
+
+      Nombre: ${name}
+      Correo Electrónico: ${email}
+      Mensaje: ${message}
+    `;
+
+    const encodedMessage = Buffer.from(emailContent)
+      .toString('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+
+    const res = await gmail.users.messages.send({
+      userId: 'me',
+      requestBody: {
+        raw: encodedMessage,
+      },
+    });
+
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: 'Correo enviado con éxito', info: info.response }),
+      body: JSON.stringify({ message: 'Correo enviado con éxito', result: res.data }),
     };
   } catch (error) {
     console.error('Error al enviar el correo:', error);
